@@ -225,7 +225,7 @@ void sigpipe_handler(int sig)
 
 - (Dispatch*)doesRequestMatch:(NSString*)request
 {
-    return [self.serverManager.dispatchMap dispatchForRequest:request];
+    return [self.serverManager.dispatchMap dispatchForRequest:request body:@""];
 }
 
 - (void)resetConnection

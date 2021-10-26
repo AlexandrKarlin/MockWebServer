@@ -36,5 +36,5 @@
 @property(nonatomic, retain)    NSDictionary    *requestResposneMap;
 
 - (void)addDispatch:(Dispatch*)dispatch;
-- (Dispatch*)dispatchForRequest:(NSString*)request body:(NSString *)body;
+- (Dispatch*)dispatchForRequest:(NSString*)request body:(NSString*)body;
 @end
