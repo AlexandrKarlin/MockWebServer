@@ -11,6 +11,7 @@
 @interface Dispatch : NSObject
 
 @property(nonatomic, retain)    NSString        *request;
+@property(nonatomic, retain)    NSString        *body;
 @property(nonatomic, retain)    NSString        *responseString;
 @property(nonatomic, retain)    NSString        *fileName;
 @property(assign)               int             code;
@@ -18,6 +19,7 @@
 @property(nonatomic, retain)    NSDictionary    *requestHeaders;
 
 - (Dispatch*)requestContainString:(NSString*)string;
+- (Dispatch*)bodyContainString:(NSString*)string;
 - (Dispatch*)responseString:(NSString*)string;
 - (Dispatch*)setResponseCode:(int)responseCode;
 - (Dispatch*)addResponseField:(NSString*)field value:(NSString*)value;
@@ -34,5 +36,5 @@
 @property(nonatomic, retain)    NSDictionary    *requestResposneMap;
 
 - (void)addDispatch:(Dispatch*)dispatch;
-- (Dispatch*)dispatchForRequest:(NSString*)request;
+- (Dispatch*)dispatchForRequest:(NSString*)request body:(NSString *)body;
 @end

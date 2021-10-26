@@ -1,19 +1,19 @@
 {
   "name": "MockWebServer",
-  "version": "0.1.0",
-  "summary": "A short description of MockWebServer.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/<GITHUB_USERNAME>/MockWebServer",
+  "version": "0.1.4",
+  "summary": "Mock Web Server for XCTest in objective-c or swift.",
+  "description": "A very simple web server, which is best for mocking web server's behavior.\nYou can determine how to respond and when to respond. Very easy to use and reliable.",
+  "homepage": "https://github.com/odinasoftware/MockWebServer",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
   },
   "authors": {
-    "jaehan": "jhan@softlayer.com"
+    "jaehan": "odinasoftware@gmail.com"
   },
   "source": {
-    "git": "https://github.com/<GITHUB_USERNAME>/MockWebServer.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/odinasoftware/MockWebServer.git",
+    "tag": "0.1.4"
   },
   "platforms": {
     "ios": "8.0"
