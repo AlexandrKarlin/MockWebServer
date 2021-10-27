@@ -124,7 +124,12 @@ void sigpipe_handler(int sig)
 			
 				if (local_buffer[currentReadPtr] == ' ') {
 					NSString *method = [[NSString alloc] initWithBytes:&local_buffer[markIndex] length:currentReadPtr-markIndex encoding:NSUTF8StringEncoding];
-					if ([method compare:@"GET"] == NSOrderedSame) {
+					if ([method isEqualToString:@"GET"] == NSOrderedSame
+                        || [method compare:@"POST"] == NSOrderedSame
+                        || [method compare:@"PUT"] == NSOrderedSame
+                        || [method compare:@"DELETE"] == NSOrderedSame
+                        || [method compare:@"OPTIONS"] == NSOrderedSame
+                        || [method compare:@"PATCH"] == NSOrderedSame) {
 						currentReadPtr++;
 						markIndex = currentReadPtr;
 						parserMode = SEARCH_REQUEST;
