@@ -125,4 +125,11 @@
     
     return dispatch;
 }
+
+- (void)flushRequestResponseMap
+{
+    if (self.requestResposneMap != nil) {
+        self.requestResposneMap = nil;
+    }
+}
 @end
