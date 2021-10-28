@@ -31,7 +31,6 @@ typedef enum {SEARCH_METHOD,
 	BOOL	isRequestValid;
 	
 	@private
-	//int signal_pipe[2];
 	int currentReadPtr;
 	int currentWritePtr;
 	int markIndex;
@@ -55,7 +54,6 @@ typedef enum {SEARCH_METHOD,
 @property (nonatomic, retain)   Dispatch                *dispatch;
 
 - (id)initWithManager:(MockWebServerManager*)manager connFD:(int)fd;
-//- (void)startLocalServer;
 - (void)stopLocalServer;
 - (BOOL)readFromConnection:(int)connfd;
 - (int)processRequestHeader:(ssize_t)count;

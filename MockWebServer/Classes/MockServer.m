@@ -28,19 +28,13 @@ static const char *Response404 = "HTTP/1.1 404 Not Found";
 static const char *Response500 = "HTTP/1.1 500 Internal Server Error";
 
 static const char *notFoundResponse = "HTTP/1.1 404 Not Found\r\nContent-length: 56\r\nConnection: close\r\n\r\n";
-							     //          11        21        31        41        51 
-								 //012345678901234567890123456789012345678901234567890123456789
-//static const char *notFoundBody = "<script language='JavaScript'> /*Not Found*/ </script>\r\n";
 static const char *NOT_FOUND_BODY = "Can't find any matching request. \r\n";
 static const char *SERVER_ERROR_BODY = "Internal server error occurred.\r\n";
 BOOL localServerStarted = NO;
 int broken_pipe_count = 0;
 
-//extern pthread_mutex_t network_mutex;
-
 void sigpipe_handler(int sig)
 {
-	//NSLog(@"%s", __func__);
 	broken_pipe_count++;
 }
 
@@ -63,7 +57,6 @@ void sigpipe_handler(int sig)
 		localRequest = nil;
 		isRequestValid = NO;
 		
-//		theNotFoundBody = [[NSData alloc] initWithBytes:notFoundBody length:strlen(notFoundBody)];
 		theNotFoundResHeader = [[NSData alloc] initWithBytes:notFoundResponse length:strlen(notFoundResponse)];
 		[self initSignalHandler];
 		needToDisplaySplash = YES;
@@ -80,7 +73,6 @@ void sigpipe_handler(int sig)
 		isRequestValid = NO;
         isRequestMatched = NO;
 	
-//		theNotFoundBody = [[NSData alloc] initWithBytes:notFoundBody length:strlen(notFoundBody)];
 		theNotFoundResHeader = [[NSData alloc] initWithBytes:notFoundResponse length:strlen(notFoundResponse)];
 		[self initSignalHandler];
 		needToDisplaySplash = YES;
@@ -107,12 +99,9 @@ void sigpipe_handler(int sig)
 - (void)stopLocalServer
 {
 	localServerStarted = NO;
-	//if (write(signal_pipe[1], STOP_LOCAL_SERVER, strlen(STOP_LOCAL_SERVER)) < 0) {
-	//	NSLog(@"%s: %s", __func__, strerror(errno));
-	//}
 }
 
-- (int)processRequestHeader:(ssize_t)count
+- (int)processRequestHeader:(ssize_t)count bodySize:(ssize_t)bodySize
 {
     int res = -1;
     NSString *field = nil;
@@ -124,7 +113,7 @@ void sigpipe_handler(int sig)
 			
 				if (local_buffer[currentReadPtr] == ' ') {
 					NSString *method = [[NSString alloc] initWithBytes:&local_buffer[markIndex] length:currentReadPtr-markIndex encoding:NSUTF8StringEncoding];
-					if ([method isEqualToString:@"GET"] == NSOrderedSame
+					if ([method compare:@"GET"] == NSOrderedSame
                         || [method compare:@"POST"] == NSOrderedSame
                         || [method compare:@"PUT"] == NSOrderedSame
                         || [method compare:@"DELETE"] == NSOrderedSame
@@ -149,7 +138,10 @@ void sigpipe_handler(int sig)
 					currentReadPtr++;
 					markIndex = currentReadPtr;
 					parserMode = SEARCH_REQUEST_FIELD;
-                    if ((self.dispatch = [self doesRequestMatch:localRequest]) != nil) {
+                                  
+                    NSString *body = [[NSString alloc] initWithBytes:&local_buffer[count] length:bodySize encoding:NSUTF8StringEncoding];
+
+                    if ((self.dispatch = [self doesRequestMatch:localRequest body:body]) != nil) {
                         TRACE("Request matched: %s from request=%s\n", [self.dispatch.request UTF8String], [localRequest UTF8String]);
                         isRequestMatched = YES;
                         self.headers = [[NSMutableDictionary alloc] initWithDictionary:self.dispatch.requestHeaders];
@@ -228,9 +220,9 @@ void sigpipe_handler(int sig)
 	return res;
 }
 
-- (Dispatch*)doesRequestMatch:(NSString*)request
+- (Dispatch*)doesRequestMatch:(NSString*)request body:(NSString*)body
 {
-    return [self.serverManager.dispatchMap dispatchForRequest:request body:@""];
+    return [self.serverManager.dispatchMap dispatchForRequest:request body:body];
 }
 
 - (void)resetConnection
@@ -300,7 +292,8 @@ void sigpipe_handler(int sig)
 			}
 			if (read_cnt > 0) {
 				currentWritePtr += read_cnt;
-				if ([self processRequestHeader:read_cnt] < 0) {
+                size_t body_size = read(connfd, local_buffer + currentWritePtr, (LOCAL_BUFFER_SIZE-currentWritePtr));
+				if ([self processRequestHeader:read_cnt bodySize:body_size] < 0) {
 					isServerError = YES;
                     break;
                 }

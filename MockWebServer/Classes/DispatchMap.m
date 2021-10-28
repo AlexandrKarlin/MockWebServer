@@ -104,26 +104,16 @@
 - (void)addDispatch:(Dispatch*)dispatch
 {
     if (dispatch.request != nil) {
-        [self.requestResposneMap setValue:dispatch forKey:[dispatch.request stringByAppendingString:dispatch.body]];
+        [self.requestResposneMap setValue:dispatch forKey:[dispatch.request stringByAppendingString:dispatch.body ? dispatch.body : @""]];
     }
     else {
         NSLog(@"%s: dispatch request can't be null.", __func__);
     }
 }
 
-- (Dispatch*)dispatchForRequest:(NSString*)request body:(NSString *)body
+- (Dispatch*)dispatchForRequest:(NSString*)request body:(NSString*)body
 {
-    Dispatch *dispatch = nil;
-    
-    for (NSString *key in self.requestResposneMap.allKeys) {
-        Dispatch *d = [self.requestResposneMap objectForKey:key];
-        if (d != nil && [request containsString:[d.request stringByAppendingString:d.body]] == YES) {
-            dispatch = d;
-            break;
-        }
-    }
-    
-    return dispatch;
+    return self.requestResposneMap[[request stringByAppendingString:body]];
 }
 
 - (void)flushRequestResponseMap

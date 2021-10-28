@@ -37,28 +37,32 @@
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     DispatchMap *dispatchMap = [[DispatchMap alloc] init];
     Dispatch *dispatch = [[Dispatch alloc] init];
-    [dispatch requestContainString:@"test"];
+    [dispatch requestContainString:@"/test"];
     [dispatch setResponseCode:200];
-    [dispatch responseString:@"test"];
+    [dispatch responseString:@"ResponseTest"];
     [dispatch responseHeaders:@{@"Accept-encoding": @"*.*"}];
+    [dispatch setBody:@"foo"];
     [dispatchMap addDispatch:dispatch];
     [mockWebServer setDispatch:dispatchMap];
     
     TestConditionWait *testWait = [TestConditionWait instance];
     NSString *dataUrl = @"http://127.0.0.1:9000/test";
     NSURL *url = [NSURL URLWithString:dataUrl];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    request.HTTPMethod = @"POST";
+    request.HTTPBody = [@"foo" dataUsingEncoding:NSUTF8StringEncoding];
     
     NSURLSessionDataTask *test = [[NSURLSession sharedSession]
-                                  dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                      // 4: Handle response here
-                                      NSLog(@"data=%@", [NSString stringWithUTF8String:[data bytes]]);
-                                      
-                                      XCTAssert([[NSString stringWithUTF8String:[data bytes]] compare:@"test"]==0, @"Body doesn't match.");
-                                    
-                                      [testWait wakeup];
-                                  }];
+                                  dataTaskWithRequest:request
+                                  completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSString *output = [NSString stringWithUTF8String:[data bytes]];
+        
+        XCTAssert([output compare:@"ResponseTest"] == NSOrderedSame, @"Response body don't match.");
+        
+        [testWait wakeup];
+
+    }];
     
-    // 3
     [test resume];
     [testWait waitFor:1];
 

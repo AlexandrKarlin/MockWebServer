@@ -68,7 +68,7 @@ class TestMockServer: XCTestCase {
         let dispatch1: Dispatch = Dispatch()
         dispatch1.requestContain("test2")
             .setResponseCode(200)
-            .responseBody(for: Bundle(for: object_getClass(self)), fromFile: "response.json")
+            .responseBody(for: Bundle(for: object_getClass(self)!), fromFile: "response.json")
             .responseHeaders(["Accept-encoding": "*.*"])
         dispatchMap.add(dispatch1)
         

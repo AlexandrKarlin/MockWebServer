@@ -54,7 +54,6 @@
 		waitForThread = [[NSCondition alloc] init];
 		activeThread = 0;
         isListening = false;
-//        self.requestHeaders = [[NSMutableDictionary alloc] init];
 	}
 	
 	return self;
@@ -81,10 +80,7 @@
 	unsigned int clilen = 0;
 	int optval = 1;
 	int onoff = 0;
-	BOOL get_new_socket = NO;	
-	
-	
-	//TRACE("%s, ttl: %d\n", __func__, ttl);
+	BOOL get_new_socket = NO;
     
     self->listenfd = -1;
     self->isStopped = NO;
@@ -132,7 +128,6 @@
             }
             
             TRACE("MockServerManager, accepting connection: %d from listening %d\n", connfd, listenfd);
-            //setsockopt(connfd, SOL_SOCKET, SO_LINGER, &l_onoff, sizeof(l_onoff));
             if (setsockopt(connfd, IPPROTO_TCP, TCP_NODELAY, &onoff, sizeof(onoff)) < 0) {
                 NSLog(@"%s, failed to set nodelay. %s", __func__, strerror(errno));
             }
