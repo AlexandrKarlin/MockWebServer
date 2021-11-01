@@ -24,4 +24,6 @@
 - (void)stop;
 
 - (void)setDispatch:(DispatchMap*)dispatch;
+- (DispatchMap*)getDispatch;
+- (void)resetDispatch;
 @end

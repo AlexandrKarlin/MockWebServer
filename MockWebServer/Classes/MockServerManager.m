@@ -187,6 +187,16 @@
     self->dispatchMap = dispatch;
 }
 
+- (DispatchMap*)getDispatch
+{
+    return self->dispatchMap;
+}
+
+- (void)resetDispatch
+{
+    self->dispatchMap = nil;
+}
+
 @end
 
 @interface MockWebServer()

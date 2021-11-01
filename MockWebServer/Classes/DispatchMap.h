@@ -37,5 +37,4 @@
 
 - (void)addDispatch:(Dispatch*)dispatch;
 - (Dispatch*)dispatchForRequest:(NSString*)request body:(NSString*)body;
-- (void)flushRequestResponseMap;
 @end
