@@ -118,7 +118,8 @@ void sigpipe_handler(int sig)
                         || [method compare:@"PUT"] == NSOrderedSame
                         || [method compare:@"DELETE"] == NSOrderedSame
                         || [method compare:@"OPTIONS"] == NSOrderedSame
-                        || [method compare:@"PATCH"] == NSOrderedSame) {
+                        || [method compare:@"PATCH"] == NSOrderedSame
+                        || [method compare:@"HEAD"] == NSOrderedSame) {
 						currentReadPtr++;
 						markIndex = currentReadPtr;
 						parserMode = SEARCH_REQUEST;
@@ -140,8 +141,8 @@ void sigpipe_handler(int sig)
 					parserMode = SEARCH_REQUEST_FIELD;
                                   
                     NSString *body = [[NSString alloc] initWithBytes:&local_buffer[count] length:bodySize encoding:NSUTF8StringEncoding];
-
-                    if ((self.dispatch = [self doesRequestMatch:localRequest body:body]) != nil) {
+                    self.dispatch = [self doesRequestMatch:localRequest body:body];
+                    if (self.dispatch != nil) {
                         TRACE("Request matched: %s from request=%s\n", [self.dispatch.request UTF8String], [localRequest UTF8String]);
                         isRequestMatched = YES;
                         self.headers = [[NSMutableDictionary alloc] initWithDictionary:self.dispatch.requestHeaders];
