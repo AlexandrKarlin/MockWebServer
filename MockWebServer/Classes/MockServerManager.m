@@ -231,4 +231,9 @@
     [self.mockServerManager setDispatch:dispatch];
 }
 
+- (DispatchMap*)getDispatch
+{
+    return [self.mockServerManager getDispatch];
+}
+
 @end
