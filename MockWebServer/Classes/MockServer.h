@@ -52,6 +52,7 @@ typedef enum {SEARCH_METHOD,
 @property (nonatomic, retain)   NSString                *localRequest;
 @property (nonatomic, retain)   NSMutableDictionary     *headers;
 @property (nonatomic, retain)   Dispatch                *dispatch;
+@property (nonatomic, retain)   NSString                *requestMethod;
 
 - (id)initWithManager:(MockWebServerManager*)manager connFD:(int)fd;
 - (void)stopLocalServer;

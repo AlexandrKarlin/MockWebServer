@@ -31,7 +31,7 @@ describe(@"Mock server test with string", ^{
         
         DispatchMap *dispatchMap = [[DispatchMap alloc] init];
         Dispatch *dispatch = [[Dispatch alloc] init];
-        [dispatch requestContainString:@"test"];
+        [dispatch requestContainString:@"/test"];
         [dispatch setResponseCode:200];
         [dispatch responseString:@"test"];
         [dispatch responseHeaders:@{@"Accept-encoding": @"*.*"}];
@@ -61,7 +61,7 @@ describe(@"Mock server test with string", ^{
         
         DispatchMap *dispatchMap = [[DispatchMap alloc] init];
         Dispatch *dispatch = [[Dispatch alloc] init];
-        [dispatch requestContainString:@"test1"];
+        [dispatch requestContainString:@"/test1"];
         [dispatch setResponseCode:200];
         [dispatch responseBodyForBundle:DEFAULT_BUNDLE fromFile:@"response.json"];
         [dispatch responseHeaders:@{@"Accept-encoding": @"*.*"}];
@@ -91,14 +91,14 @@ describe(@"Mock server test with string", ^{
     it(@"Mulitpe request example", ^{
         DispatchMap *dispatchMap = [[DispatchMap alloc] init];
         Dispatch *dispatch = [[Dispatch alloc] init];
-        [dispatch requestContainString:@"test2"];
+        [dispatch requestContainString:@"/test2"];
         [dispatch setResponseCode:200];
         [dispatch responseString:@"test"];
         [dispatch responseHeaders:@{@"Accept-encoding": @"*.*"}];
         [dispatchMap addDispatch:dispatch];
         
         dispatch = [[Dispatch alloc] init];
-        [dispatch requestContainString:@"test3"];
+        [dispatch requestContainString:@"/test3"];
         [dispatch setResponseCode:200];
         [dispatch responseBodyForBundle:DEFAULT_BUNDLE fromFile:@"response.json"];
         [dispatch responseHeaders:@{@"Accept-encoding": @"*.*"}];

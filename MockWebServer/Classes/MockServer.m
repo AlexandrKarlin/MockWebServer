@@ -49,6 +49,7 @@ void sigpipe_handler(int sig)
 @synthesize localRequest;
 @synthesize serverManager;
 @synthesize headers;
+@synthesize requestMethod;
 
 - (id)init
 {
@@ -123,6 +124,7 @@ void sigpipe_handler(int sig)
 						currentReadPtr++;
 						markIndex = currentReadPtr;
 						parserMode = SEARCH_REQUEST;
+                        requestMethod = method;
 						continue;
 					}
 					else {
@@ -139,8 +141,10 @@ void sigpipe_handler(int sig)
 					currentReadPtr++;
 					markIndex = currentReadPtr;
 					parserMode = SEARCH_REQUEST_FIELD;
-                                  
-                    NSString *body = [[NSString alloc] initWithBytes:&local_buffer[count] length:bodySize encoding:NSUTF8StringEncoding];
+                    NSString *body = @"";
+                    if (![requestMethod isEqualToString:@"GET"]) {
+                        body = [[NSString alloc] initWithBytes:&local_buffer[count] length:bodySize encoding:NSUTF8StringEncoding];
+                    }
                     self.dispatch = [self doesRequestMatch:localRequest body:body];
                     if (self.dispatch != nil) {
                         TRACE("Request matched: %s from request=%s\n", [self.dispatch.request UTF8String], [localRequest UTF8String]);
@@ -292,8 +296,8 @@ void sigpipe_handler(int sig)
 				goto clean;
 			}
 			if (read_cnt > 0) {
+                size_t body_size = 0;
 				currentWritePtr += read_cnt;
-                size_t body_size = read(connfd, local_buffer + currentWritePtr, (LOCAL_BUFFER_SIZE-currentWritePtr));
 				if ([self processRequestHeader:read_cnt bodySize:body_size] < 0) {
 					isServerError = YES;
                     break;
@@ -302,7 +306,9 @@ void sigpipe_handler(int sig)
                     TRACE("Body detected.");
                     break;
                 }
-				
+                if (![requestMethod isEqualToString:@"GET"]) {
+                    body_size = read(connfd, local_buffer + currentWritePtr, (LOCAL_BUFFER_SIZE-currentWritePtr));
+                }
 			}
 			else if (read_cnt == 0) {
 				TRACE(">>>>> connection close: %d\n", connfd);
